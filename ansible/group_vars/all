@@ -1,0 +1,2 @@
+kubeconfig_path: ~/.kube/config
+kubecontext: k0s-cluster

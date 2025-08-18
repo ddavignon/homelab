@@ -1,0 +1,15 @@
+---
+- name: Deploy Prometheus chart inside monitoring namespace (and create it)
+  kubernetes.core.helm:
+    name: prometheus
+    chart_ref: https://github.com/prometheus-community/helm-charts/releases/download/kube-prometheus-stack-50.2.0/kube-prometheus-stack-50.2.0.tgz
+    release_namespace: monitoring
+    create_namespace: true
+    kubeconfig: "{{ kubeconfig_path }}"
+    context: "{{ kubecontext }}"
+    values:
+      grafana:
+        ingress:
+          enabled: true
+          hosts:
+           - grafana.lan

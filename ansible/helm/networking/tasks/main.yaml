@@ -1,0 +1,43 @@
+---
+- name: Add metallb Helm repo
+  kubernetes.core.helm_repository:
+    name: metallb
+    repo_url: https://metallb.github.io/metallb
+
+- name: Install metallb via Helm
+  kubernetes.core.helm:
+    name: metallb
+    chart_ref: metallb/metallb
+    release_namespace: metallb
+    create_namespace: true
+    state: present
+    kubeconfig: "{{ kubeconfig_path }}"
+    context: "{{ kubecontext }}"
+
+- name: Deploy metallb IPAddressPool
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: metallb.io/v1beta1
+      kind: IPAddressPool
+      metadata:
+        name: ingress-addresses
+        namespace: metallb
+      spec:
+        addresses:
+        - 192.168.1.200-192.168.1.202
+    kubeconfig: "{{ kubeconfig_path }}"
+    context: "{{ kubecontext }}"
+
+- name: Deploy metallb L2Advertisement
+  kubernetes.core.k8s:
+    definition:
+      apiVersion: metallb.io/v1beta1
+      kind: L2Advertisement
+      metadata:
+        name: l2-advertise
+        namespace: metallb
+    kubeconfig: "{{ kubeconfig_path }}"
+    context: "{{ kubecontext }}"
+
+
+
